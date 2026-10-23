@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0d2931">
+  <meta name="description" content="Вызвали в школу! — маленькая аркада в духе Flappy Bird про ученика, причины вызовов и побег от завуча.">
+  <title>Вызвали в школу! — школьная аркада</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="game-shell" id="gameShell" data-mode="ready">
+    <canvas id="game" aria-label="Игровое поле: ученик летит между вызовами в школу"></canvas>
+    <div class="paper-grain" aria-hidden="true"></div>
+
+    <header class="top-ui">
+      <div class="brand" aria-label="Школа номер 7, 5 Б">
+        <span class="brand-mark">5Б</span>
+        <span class="brand-text">ШКОЛА №7</span>
+      </div>
+      <div class="top-actions">
+        <button class="icon-button" id="soundButton" type="button" aria-label="Выключить звук" title="Звук (M)">
+          <svg class="sound-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path class="speaker" d="M4 9.25v5.5h3.6L13 19V5L7.6 9.25H4Z"/>
+            <path class="waves" d="M16 8.3a5.2 5.2 0 0 1 0 7.4M18.7 5.5a8.8 8.8 0 0 1 0 13"/>
+            <path class="cross" d="m16.8 9 5 6m0-6-5 6"/>
+          </svg>
+        </button>
+        <button class="icon-button pause-button" id="pauseButton" type="button" aria-label="Поставить на паузу" title="Пауза (P)">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="6" y="5" width="4.2" height="14" rx="1.6"/>
+            <rect x="13.8" y="5" width="4.2" height="14" rx="1.6"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="hud" id="hud" aria-live="polite" aria-atomic="true">
+      <div class="score-badge" id="scoreBadge"><span id="score">0</span></div>
+      <div class="score-caption"><span id="callsWord">вызовов</span> пройдено</div>
+      <div class="best-line">Рекорд: <strong id="bestHud">0</strong></div>
+    </section>
+
+    <div class="overlay overlay-start is-visible" id="startOverlay">
+      <article class="card start-card">
+        <span class="stamp" aria-hidden="true">СРОЧНО</span>
+        <p class="eyebrow">Школа №7 · 5 «Б»</p>
+        <h1>Вызвали<br><span>в школу!</span></h1>
+        <p class="lede">Помоги ученику пролететь между причинами вызова. Одно нажатие — и он снова в воздухе.</p>
+        <button class="primary-button" id="startButton" type="button">
+          <span>Начать побег</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-5-5 5 5-5 5"/></svg>
+        </button>
+        <p class="instruction"><kbd>Пробел</kbd> или тап, чтобы взлететь</p>
+        <div class="start-record">Твой рекорд: <strong id="startBest">0</strong></div>
+      </article>
+    </div>
+
+    <div class="overlay overlay-end" id="endOverlay">
+      <article class="card end-card">
+        <p class="eyebrow" id="endEyebrow">ДНЕВНИК НА СТОЛ</p>
+        <h2 id="endTitle">Опять вызвали!</h2>
+        <p class="end-message" id="endMessage">Завуч уже ждёт у кабинета.</p>
+        <div class="reason-card">
+          <span class="reason-label" id="endReasonLabel">Последняя причина</span>
+          <strong id="endReason">Домашка не сделана</strong>
+        </div>
+        <div class="score-row">
+          <div class="result"><span>Пройдено</span><strong id="endScore">0</strong></div>
+          <div class="result-divider" aria-hidden="true"></div>
+          <div class="result"><span>Рекорд</span><strong id="endBest">0</strong></div>
+        </div>
+        <div class="new-record" id="newRecord" hidden>Новый рекорд!</div>
+        <button class="primary-button" id="restartButton" type="button">
+          <span>Ещё попытка</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 1-2.3-5.6M20 4v7h-7"/></svg>
+        </button>
+        <p class="tiny-hint"><kbd>Пробел</kbd> — сыграть ещё</p>
+      </article>
+    </div>
+
+    <div class="overlay overlay-pause" id="pauseOverlay">
+      <article class="card pause-card">
+        <div class="pause-bell" aria-hidden="true">
+          <svg viewBox="0 0 48 48">
+            <path d="M11 33h26l-3-5V18a10 10 0 0 0-20 0v10l-3 5Z"/>
+            <path d="M20 37a4 4 0 0 0 8 0"/>
+          </svg>
+        </div>
+        <p class="eyebrow">ПЕРЕМЕНА</p>
+        <h2>Пауза</h2>
+        <p class="end-message">Отдышись. Причины подождут.</p>
+        <button class="primary-button" id="resumeButton" type="button">Продолжить</button>
+        <p class="tiny-hint"><kbd>P</kbd> или <kbd>Esc</kbd> — продолжить</p>
+      </article>
+    </div>
+
+    <div class="rotate-hint">
+      <div>
+        <span class="rotate-phone" aria-hidden="true"></span>
+        <strong>Поверни телефон вертикально</strong>
+        <p>Так ученику будет куда лететь.</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="game.js" defer></script>
+</body>
+</html>
